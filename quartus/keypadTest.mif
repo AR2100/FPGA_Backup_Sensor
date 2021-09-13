@@ -1,0 +1,42 @@
+-- Altera Memory Initialization File (MIF)
+
+DEPTH = 2048;
+WIDTH = 16;
+
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+
+CONTENT
+  BEGIN
+    [000..7FF] : 0000;  -- Default to NOP
+
+           000 : 8008;  -- 	CALL	Delay
+           001 : 8003;  -- 	CALL   	Display
+           002 : 2800;  -- 	Jump Start
+           003 : 080D;  -- 	LOAD 	Zero
+           004 : 9805;  -- 	OUT 	Hex1
+           005 : 90F1;  -- 	IN     	KEYPAD
+           006 : 9805;  -- 	OUT		Hex1
+           007 : 8800;  -- 	Return
+           008 : 9802;  -- 		OUT 	Timer
+           009 : 9002;  -- 		IN		Timer
+           00A : 4009;  -- 		JZERO	WaitingLoop
+           00B : 8800;  -- 		RETURN
+           00C : 0000;  -- Initial:  DW 0
+           00D : 0000;  -- Zero:      DW &B0000000000
+           00E : FFFF;  -- NegOne:    DW -1
+           00F : 0001;  -- Bit0:      DW &B0000000001
+           010 : 0002;  -- Bit1:      DW &B0000000010
+           011 : 0004;  -- Bit2:      DW &B0000000100
+           012 : 0008;  -- Bit3:      DW &B0000001000
+           013 : 0010;  -- Bit4:      DW &B0000010000
+           014 : 0020;  -- Bit5:      DW &B0000100000
+           015 : 0040;  -- Bit6:      DW &B0001000000
+           016 : 0080;  -- Bit7:      DW &B0010000000
+           017 : 0100;  -- Bit8:      DW &B0100000000
+           018 : 0200;  -- Bit9:      DW &B1000000000
+           019 : 00FF;  -- LoByte:    DW &H00FF
+           01A : FF00;  -- HiByte:    DW &HFF00
+           01B : 000F;  -- hexPos1:   DW &B0000001111
+           01C : 00F0;  -- hexPos2:   DW &B0011110000
+  END;

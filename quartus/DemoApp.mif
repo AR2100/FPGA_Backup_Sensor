@@ -1,0 +1,426 @@
+-- Altera Memory Initialization File (MIF)
+
+DEPTH = 2048;
+WIDTH = 16;
+
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+
+CONTENT
+  BEGIN
+    [000..7FF] : 0000;  -- Default to NOP
+
+           000 : 0981;  -- 		LOAD State_Measure
+           001 : 1180;  -- 		STORE State
+           002 : 0988;  -- 		LOAD Unit_Millimeters
+           003 : 1187;  -- 		STORE Current_Unit
+           004 : 9802;  --         OUT Timer
+           005 : B800;  -- 		LOADI 0
+           006 : 116D;  --         STORE cycleStartTime
+           007 : 9002;  --         IN Timer
+           008 : 118B;  --         STORE CurrentTime
+           009 : 90F0;  -- 		IN RANGEFINDER
+           00A : 1186;  -- 		STORE Rangefinder_Measurement
+           00B : 8143;  --         CALL Alert
+           00C : 097E;  -- 		LOAD KeypadInput
+           00D : 117F;  -- 		STORE PrevKeypadInput
+           00E : 816F;  -- 		CALL  ReadKeypadAsync
+           00F : 117E;  -- 		STORE KeypadInput 
+           010 : 0980;  -- 		LOAD State
+           011 : 2181;  -- 		SUB State_Measure
+           012 : 401F;  -- 		JZERO Handle_State_Measure
+           013 : 0980;  -- 		LOAD State
+           014 : 2182;  -- 		SUB State_Main_Menu
+           015 : 4022;  -- 		JZERO Handle_State_Main_Menu
+           016 : 0980;  -- 		LOAD State
+           017 : 2183;  -- 		SUB State_Target_Distance_Menu
+           018 : 4025;  -- 		JZERO Handle_State_Target_Distance_Menu
+           019 : 0980;  -- 		LOAD State
+           01A : 2184;  -- 		SUB State_Unit_Menu
+           01B : 4028;  -- 		JZERO Handle_State_Unit_Menu
+           01C : 0980;  -- 		LOAD State
+           01D : 2185;  -- 		SUB State_Keypad_Press
+           01E : 402B;  -- 		JZERO Handle_State_Keypad_Press
+           01F : 802D;  -- 		CALL Handle_State_Measure_Display
+           020 : 8032;  -- 		CALL Handle_State_Measure_Input
+           021 : 2807;  -- 		JUMP MainLoop
+           022 : 803B;  -- 		CALL Handle_State_Main_Menu_Display
+           023 : 8040;  -- 		CALL Handle_State_Main_Menu_Input
+           024 : 2807;  -- 		JUMP MainLoop
+           025 : 805B;  -- 		CALL Handle_State_Target_Distance_Menu_Display
+           026 : 8060;  --         CALL Handle_State_Target_Distance_Menu_Input
+           027 : 2807;  -- 		JUMP MainLoop
+           028 : 80CD;  -- 		CALL Handle_State_Unit_Menu_Display
+           029 : 80F0;  -- 		CALL Handle_State_Unit_Menu_Input
+           02A : 2807;  -- 		JUMP MainLoop
+           02B : 811E;  -- 		CALL Handle_State_Keypad_Press_Display
+           02C : 2807;  -- 		JUMP MainLoop
+           02D : B800;  -- 		LOADI &H00
+           02E : 9805;  -- 		OUT Hex1
+           02F : 0986;  -- 		LOAD Rangefinder_Measurement
+           030 : 9804;  -- 		OUT Hex0
+           031 : 8800;  -- 		RETURN
+           032 : 097E;  -- 		LOAD KeypadInput
+           033 : 219B;  -- 		SUB KEY_STAR
+           034 : 4036;  -- 		JZERO continue6
+           035 : 8800;  -- 		RETURN
+           036 : 097E;  -- 		LOAD KeypadInput
+           037 : 217F;  -- 		SUB PrevKeypadInput
+           038 : 403A;  -- 		JZERO continue7
+           039 : 8126;  -- 		CALL Launch_Main_Menu 
+           03A : 8800;  -- 		RETURN
+           03B : B801;  -- 		LOADI 	&H01
+           03C : 9805;  --         OUT   	Hex1
+           03D : BA03;  -- 		LOADI 	&H0203
+           03E : 9804;  -- 		OUT		Hex0
+           03F : 8800;  --         RETURN
+           040 : 097E;  -- 		LOAD KeypadInput
+           041 : 2192;  -- 		SUB KEY_1
+           042 : 4044;  -- 		JZERO launch1
+           043 : 2846;  -- 		JUMP continue1
+           044 : 8129;  -- 		CALL Launch_Target_Distance_Menu
+           045 : 8800;  -- 		RETURN
+           046 : 097E;  -- 		LOAD KeypadInput
+           047 : 2193;  -- 		SUB KEY_2
+           048 : 404A;  -- 		JZERO launch2
+           049 : 284C;  -- 		JUMP continue2
+           04A : 812C;  -- 		CALL Launch_Unit_Menu
+           04B : 8800;  -- 		RETURN
+           04C : 097E;  -- 		LOAD KeypadInput
+           04D : 2194;  -- 		SUB KEY_3
+           04E : 4050;  -- 		JZERO launch3
+           04F : 2852;  -- 		JUMP continue3
+           050 : 812F;  -- 		CALL Launch_Keypad_Press_Menu
+           051 : 8800;  -- 		RETURN
+           052 : 097E;  -- 		LOAD KeypadInput
+           053 : 219B;  -- 		SUB KEY_STAR
+           054 : 4056;  -- 		JZERO continue4
+           055 : 8800;  -- 		RETURN
+           056 : 097E;  -- 		LOAD KeypadInput
+           057 : 217F;  -- 		SUB PrevKeypadInput
+           058 : 405A;  -- 		JZERO continue5
+           059 : 8123;  -- 		CALL Launch_Measure 
+           05A : 8800;  -- 		RETURN
+           05B : B8DA;  --         LOADI 	&HDA
+           05C : 9805;  --         OUT   	Hex1
+           05D : 098E;  -- 		LOAD    AlertDistance
+           05E : 9804;  -- 		OUT		Hex0
+           05F : 8800;  --         RETURN
+           060 : 097E;  -- 		LOAD KeypadInput
+           061 : 219B;  -- 		SUB KEY_STAR ; back
+           062 : 4064;  -- 		JZERO continue_td_1
+           063 : 2869;  -- 		JUMP continue_td_2
+           064 : 097E;  -- 		LOAD KeypadInput
+           065 : 217F;  -- 		SUB PrevKeypadInput
+           066 : 4069;  -- 		JZERO continue_td_2
+           067 : 8126;  -- 		CALL Launch_Main_Menu 
+           068 : 8800;  -- 		RETURN
+           069 : 097E;  --         LOAD KeypadInput
+           06A : 219C;  -- 		SUB KEY_POUND ; start typing
+           06B : 406D;  -- 		JZERO continue_td_3
+           06C : 28C4;  -- 		JUMP td_return
+           06D : 097E;  -- 		LOAD KeypadInput
+           06E : 217F;  -- 		SUB PrevKeypadInput
+           06F : 40C4;  -- 		JZERO td_return
+           070 : B8D0;  --         LOADI &HD0
+           071 : 9805;  --         OUT Hex1
+           072 : 80C9;  --         CALL ResetKeypad
+           073 : BFFF;  --         LOADI -1
+           074 : 10C6;  --         STORE digit0
+           075 : 10C7;  --         STORE digit1
+           076 : 10C8;  --         STORE digit2
+           077 : 90F1;  -- 		IN Keypad
+           078 : 10C5;  --         STORE td_input
+           079 : 3077;  --         JNEG td_mandatory_input_loop
+           07A : 08C5;  --         LOAD td_input
+           07B : 219B;  --         SUB KEY_STAR ; back button
+           07C : 409A;  --         JZERO td_back
+           07D : 08C5;  --         LOAD td_input
+           07E : 219C;  --         SUB KEY_POUND ; enter button
+           07F : 409C;  --         JZERO td_input_done
+           080 : 08C8;  --         LOAD digit2
+           081 : 388A;  --         JPOS td_saveDigit1
+           082 : 408A;  --         JZERO td_saveDigit1
+           083 : 08C5;  --         LOAD td_input
+           084 : 10C8;  --         STORE digit2
+           085 : 9804;  --         OUT Hex0
+           086 : 80C9;  --         CALL ResetKeypad
+           087 : B802;  --         LOADI 2
+           088 : 8174;  --         CALL Delay ; 0.2s delay helps prevent situation with keydown mode where user press and hold is registered as multiple presses
+           089 : 2877;  --         JUMP td_mandatory_input_loop
+           08A : 08C7;  --         LOAD digit1
+           08B : 3897;  --         JPOS td_saveDigit0
+           08C : 4097;  --         JZERO td_saveDigit0
+           08D : 08C5;  --         LOAD td_input
+           08E : 10C7;  --         STORE digit1
+           08F : 08C8;  --         LOAD digit2
+           090 : 6004;  --         SHIFT 4
+           091 : 18C7;  --         ADD digit1
+           092 : 9804;  --         OUT Hex0
+           093 : B802;  --         LOADI 2
+           094 : 8174;  --         CALL Delay
+           095 : 80C9;  --         CALL ResetKeypad
+           096 : 2877;  --         JUMP td_mandatory_input_loop
+           097 : 08C5;  --         LOAD td_input
+           098 : 10C6;  --         STORE digit0
+           099 : 289C;  --         JUMP td_input_done
+           09A : 8126;  --         CALL Launch_Main_Menu
+           09B : 8800;  --         RETURN
+           09C : 08C8;  --         LOAD digit2
+           09D : 30A3;  --         JNEG td_handleZeroDigitNumber
+           09E : 08C7;  --         LOAD digit1
+           09F : 30A9;  --         JNEG td_handleOneDigitNumber
+           0A0 : 08C6;  --         LOAD digit0
+           0A1 : 30AF;  --         JNEG td_handleTwoDigitNumber
+           0A2 : 28B5;  --         JUMP td_convert_digits_to_number
+           0A3 : B800;  --         LOADI 0
+           0A4 : 9804;  --         OUT Hex0
+           0A5 : 118E;  --         STORE AlertDistance
+           0A6 : 118F;  --         STORE WarningDistance
+           0A7 : 1190;  --         STORE CautionDistance
+           0A8 : 8800;  --         RETURN
+           0A9 : 08C8;  --         LOAD digit2
+           0AA : 10C6;  --         STORE digit0
+           0AB : B800;  --         LOADI 0
+           0AC : 10C8;  --         STORE digit2
+           0AD : 10C7;  --         STORE digit1
+           0AE : 28B5;  --         JUMP td_convert_digits_to_number
+           0AF : 08C7;  --         LOAD digit1
+           0B0 : 10C6;  --         STORE digit0
+           0B1 : 08C8;  --         LOAD digit2
+           0B2 : 10C7;  --         STORE digit1
+           0B3 : B800;  --         LOADI 0
+           0B4 : 10C8;  --         STORE digit2
+           0B5 : 08C8;  --         LOAD digit2
+           0B6 : 6004;  --         SHIFT 4
+           0B7 : 18C7;  --         ADD digit1
+           0B8 : 6004;  --         SHIFT 4
+           0B9 : 18C6;  --         ADD digit0
+           0BA : 118E;  --         STORE AlertDistance
+           0BB : 9804;  --         OUT Hex0
+           0BC : 6011;  --         SHIFT -1
+           0BD : 198E;  --         ADD AlertDistance
+           0BE : 118F;  --         STORE WarningDistance
+           0BF : 098E;  --         LOAD AlertDistance
+           0C0 : 198E;  --         ADD AlertDistance
+           0C1 : 1190;  --         STORE CautionDistance
+           0C2 : B811;  --         LOADI &H11
+           0C3 : 9805;  --         OUT Hex1
+           0C4 : 8800;  --         RETURN
+           0C5 : 0000;  --     td_input:       DW 0
+           0C6 : FFFF;  --     digit0:         DW -1 ; right-most
+           0C7 : FFFF;  --     digit1:         DW -1 ; middle
+           0C8 : FFFF;  --     digit2:         DW -1 ; left-most
+           0C9 : 90F1;  --         IN Keypad
+           0CA : 30CC;  --         JNEG reset_complete
+           0CB : 28C9;  --         JUMP ResetKeypad
+           0CC : 8800;  --         RETURN
+           0CD : 0987;  -- 		LOAD Current_Unit
+           0CE : 2188;  -- 		SUB Unit_Millimeters
+           0CF : 40D7;  -- 		JZERO using_mm
+           0D0 : 0987;  -- 		LOAD Current_Unit
+           0D1 : 2189;  -- 		SUB Unit_Centimeters
+           0D2 : 40E1;  -- 		JZERO using_cm
+           0D3 : 0987;  -- 		LOAD Current_Unit
+           0D4 : 218A;  -- 		SUB Unit_Inches
+           0D5 : 40DC;  -- 		JZERO using_in
+           0D6 : 28EA;  -- 		JUMP other_unit
+           0D7 : B8A6;  -- 		LOADI 	&HA6
+           0D8 : 9805;  --         OUT   	Hex1
+           0D9 : BA04;  -- 		LOADI 	&H0204
+           0DA : 9804;  -- 		OUT		Hex0
+           0DB : 8800;  -- 		RETURN
+           0DC : B806;  -- 		LOADI 	&H06
+           0DD : 9805;  --         OUT   	Hex1
+           0DE : BAA4;  -- 		LOADI 	&H02A4
+           0DF : 9804;  -- 		OUT		Hex0
+           0E0 : 8800;  --         RETURN
+           0E1 : B806;  -- 		LOADI 	&H06
+           0E2 : 9805;  --         OUT   	Hex1
+           0E3 : BA04;  -- 		LOADI 	&H0204
+           0E4 : 10EF;  -- 		STORE	unit_menu_temp_var
+           0E5 : B8A0;  -- 		LOADI	&HA0
+           0E6 : 6008;  -- 		SHIFT	8
+           0E7 : 50EF;  -- 		OR		unit_menu_temp_var
+           0E8 : 9804;  -- 		OUT		Hex0
+           0E9 : 8800;  --         RETURN
+           0EA : B806;  -- 		LOADI 	&H06
+           0EB : 9805;  --         OUT   	Hex1
+           0EC : BA04;  -- 		LOADI 	&H0204
+           0ED : 9804;  -- 		OUT		Hex0
+           0EE : 8800;  -- 		RETURN
+           0EF : 0000;  -- 		DW &H0
+           0F0 : 097E;  -- 		LOAD KeypadInput
+           0F1 : 219B;  -- 		SUB KEY_STAR
+           0F2 : 40F4;  -- 		JZERO continue8
+           0F3 : 28F9;  -- 		JUMP continue9
+           0F4 : 097E;  -- 		LOAD KeypadInput
+           0F5 : 217F;  -- 		SUB PrevKeypadInput
+           0F6 : 40F9;  -- 		JZERO continue9
+           0F7 : 8126;  -- 		CALL Launch_Main_Menu 
+           0F8 : 8800;  -- 		RETURN
+           0F9 : 097E;  -- 		LOAD KeypadInput
+           0FA : 2197;  -- 		SUB KEY_6
+           0FB : 40FD;  -- 		JZERO continue10
+           0FC : 2905;  -- 		JUMP continue11
+           0FD : 097E;  -- 		LOAD KeypadInput
+           0FE : 217F;  -- 		SUB PrevKeypadInput
+           0FF : 4105;  -- 		JZERO continue11
+           100 : 0988;  -- 		LOAD Unit_Millimeters
+           101 : 1187;  -- 		STORE Current_Unit
+           102 : 0988;  -- 		LOAD Unit_Millimeters
+           103 : 98F0;  -- 		OUT RANGEFINDER
+           104 : 8800;  -- 		RETURN
+           105 : 097E;  -- 		LOAD KeypadInput
+           106 : 2193;  -- 		SUB KEY_2
+           107 : 4109;  -- 		JZERO continue12
+           108 : 2911;  -- 		JUMP continue13
+           109 : 097E;  -- 		LOAD KeypadInput
+           10A : 217F;  -- 		SUB PrevKeypadInput
+           10B : 4111;  -- 		JZERO continue13
+           10C : 0989;  -- 		LOAD Unit_Centimeters
+           10D : 1187;  -- 		STORE Current_Unit
+           10E : 0989;  -- 		LOAD Unit_Centimeters
+           10F : 98F0;  -- 		OUT RANGEFINDER
+           110 : 8800;  -- 		RETURN
+           111 : 097E;  -- 		LOAD KeypadInput
+           112 : 2195;  -- 		SUB KEY_4
+           113 : 4115;  -- 		JZERO continue14
+           114 : 291D;  -- 		JUMP continue15
+           115 : 097E;  -- 		LOAD KeypadInput
+           116 : 217F;  -- 		SUB PrevKeypadInput
+           117 : 411D;  -- 		JZERO continue15
+           118 : 098A;  -- 		LOAD Unit_Inches
+           119 : 1187;  -- 		STORE Current_Unit
+           11A : 098A;  -- 		LOAD Unit_Inches
+           11B : 98F0;  -- 		OUT RANGEFINDER
+           11C : 8800;  -- 		RETURN
+           11D : 8800;  -- 		RETURN
+           11E : B800;  -- 		LOADI 	&H00
+           11F : 9805;  --         OUT   	Hex1
+           120 : B803;  -- 		LOADI 	&H0003
+           121 : 9804;  -- 		OUT		Hex0
+           122 : 8800;  --         RETURN
+           123 : 0981;  -- 		LOAD State_Measure
+           124 : 1180;  -- 		STORE State
+           125 : 8800;  -- 		RETURN
+           126 : 0982;  -- 		LOAD State_Main_Menu
+           127 : 1180;  -- 		STORE State
+           128 : 8800;  -- 		RETURN
+           129 : 0983;  -- 		LOAD State_Target_Distance_Menu
+           12A : 1180;  -- 		STORE State
+           12B : 8800;  -- 		RETURN
+           12C : 0984;  -- 		LOAD State_Unit_Menu
+           12D : 1180;  -- 		STORE State
+           12E : 8800;  -- 		RETURN
+           12F : 0985;  -- 		LOAD State_Keypad_Press
+           130 : 1180;  -- 		STORE State
+           131 : 8800;  -- 		RETURN
+           132 : 097E;  --         LOAD KeypadInput
+           133 : 219B;  --         SUB   KEY_STAR
+           134 : 4137;  --         JZERO menustart_true
+           135 : B800;  --         LOADI 0
+           136 : 8800;  --         RETURN
+           137 : B801;  --         LOADI 1
+           138 : 8800;  --         RETURN
+           139 : B801;  --         LOADI 	&H01
+           13A : 9805;  --         OUT   	Hex1
+           13B : BA03;  -- 		LOADI 	&H0203
+           13C : 9804;  -- 		OUT		Hex0
+           13D : B80A;  --         LOADI 10
+           13E : 8174;  --         CALL  Delay
+           13F : 8800;  --         RETURN
+           140 : 816F;  --         CALL  ReadKeypadAsync
+           141 : 9805;  --         OUT   Hex1
+           142 : 8800;  --         RETURN
+           143 : 0986;  --             LOAD Rangefinder_Measurement
+           144 : 218E;  --             SUB   AlertDistance
+           145 : 3949;  --             JPOS  CheckWarning
+           146 : B801;  --             LOADI alertPeriod
+           147 : 116E;  --             STORE period
+           148 : 2954;  --             JUMP  blink
+           149 : 0986;  --             LOAD  Rangefinder_Measurement
+           14A : 218F;  --             SUB   WarningDistance
+           14B : 394F;  --             JPOS  CheckCaution
+           14C : B802;  --             LOADI warningPeriod
+           14D : 116E;  --             STORE period
+           14E : 2954;  --             JUMP  blink
+           14F : 0986;  --             LOAD  Rangefinder_Measurement
+           150 : 2190;  --             SUB   CautionDistance
+           151 : 3969;  --             JPOS  NoAlert ; no object within alertDistance * 2
+           152 : B805;  --             LOADI cautionPeriod
+           153 : 116E;  --             STORE period
+           154 : 098B;  --             LOAD CurrentTime
+           155 : 216D;  --             SUB cycleStartTime
+           156 : 216E;  --             SUB period
+           157 : 3161;  --             JNEG do_the_LEDs
+           158 : 096C;  --             LOAD cycle
+           159 : 395D;  --             JPOS switch_to_0
+           15A : B801;  --             LOADI 1
+           15B : 116C;  --             STORE cycle
+           15C : 295F;  --             JUMP finish_switch
+           15D : B800;  --             LOADI 0
+           15E : 116C;  --             STORE cycle
+           15F : 098B;  --             LOAD CurrentTime
+           160 : 116D;  --             STORE cycleStartTime
+           161 : 096C;  --             LOAD  cycle ; alternate each iteration between LED up and LED down
+           162 : 3966;  --             JPOS  LED_Up
+           163 : B800;  --             LOADI 0
+           164 : 9801;  --             OUT   LEDs
+           165 : 8800;  --             RETURN
+           166 : BFFF;  --             LOADI -1
+           167 : 9801;  --             OUT   LEDs
+           168 : 8800;  --             RETURN
+           169 : B800;  --             LOADI 0
+           16A : 9801;  --             OUT LEDs
+           16B : 8800;  --             RETURN
+           16C : 0001;  -- cycle:          DW 1   ; 1 = blink, 0 = delay
+           16D : 0000;  -- cycleStartTime: DW 0
+           16E : 0000;  -- period:         DW 0
+           16F : 90F1;  --         IN    KEYPAD ; -1 will eventually mean no press, for now 0
+           170 : 3972;  --         JPOS  AsyncReadDone
+           171 : BFFF;  --         LOADI -1
+           172 : 8800;  --         RETURN
+           173 : 8800;  --         RETURN
+           174 : 117C;  --         STORE  ticks
+           175 : 098B;  --         LOAD CurrentTime
+           176 : 117D;  --         STORE delayStartTime
+           177 : 9002;  --         IN     Timer
+           178 : 217D;  --         SUB    delayStartTime
+           179 : 217C;  --         SUB    ticks
+           17A : 3177;  --         JNEG   WaitingLoop  ; wait until the timer records
+           17B : 8800;  --         RETURN
+           17C : 0000;  -- ticks: DW 0
+           17D : 0000;  -- delayStartTime: DW 0
+           17E : FFFF;  -- KeypadInput:	DW &HFFFF
+           17F : FFFF;  -- PrevKeypadInput:	DW &HFFFF
+           180 : 0000;  -- State:	DW 0
+           181 : 0000;  -- State_Measure:	DW 0
+           182 : 0001;  -- State_Main_Menu:	DW 1
+           183 : 0002;  -- State_Target_Distance_Menu:		DW 2
+           184 : 0003;  -- State_Unit_Menu:	DW 3
+           185 : 0004;  -- State_Keypad_Press:		DW 4
+           186 : 0000;  -- Rangefinder_Measurement: DW 0
+           187 : 0000;  -- Current_Unit: DW 0
+           188 : 0000;  -- Unit_Millimeters:	DW &H0000
+           189 : 0001;  -- Unit_Centimeters:	DW &H0001
+           18A : 0010;  -- Unit_Inches:		DW &H0010
+           18B : 0000;  -- CurrentTime:               DW 0
+           18C : 0000;  -- KeypadSettingsVector:      DW 0
+           18D : 0000;  -- RangefinderSettingsVector: DW 0
+           18E : 0000;  -- AlertDistance:             DW 0
+           18F : 0000;  -- WarningDistance:           DW 0 ; AlertDistance * 1.5
+           190 : 0000;  -- CautionDistance:           DW 0 ; AlertDistance * 2
+           191 : 0000;  -- KEY_0:     DW &H0
+           192 : 0001;  -- KEY_1:     DW &H1
+           193 : 0002;  -- KEY_2:     DW &H2
+           194 : 0003;  -- KEY_3:     DW &H3
+           195 : 0004;  -- KEY_4:     DW &H4
+           196 : 0005;  -- KEY_5:     DW &H5
+           197 : 0006;  -- KEY_6:     DW &H6
+           198 : 0007;  -- KEY_7:     DW &H7
+           199 : 0008;  -- KEY_8:     DW &H8
+           19A : 0009;  -- KEY_9:     DW &H9
+           19B : 000A;  -- KEY_STAR:  DW &HA
+           19C : 000C;  -- KEY_POUND: DW &HC
+  END;

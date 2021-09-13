@@ -1,0 +1,159 @@
+LIBRARY IEEE;
+LIBRARY LPM;
+
+USE IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.all;
+use IEEE.STD_LOGIC_UNSIGNED.all;
+use IEEE.numeric_std.all;
+USE LPM.LPM_COMPONENTS.ALL;
+
+
+ENTITY keypad IS
+	PORT(
+		CLK         : IN    STD_LOGIC;
+		RESETN      : IN    STD_LOGIC;
+		KEYCOL      : OUT   STD_LOGIC_VECTOR(3 downto 1);
+		ROWCOL      : IN    STD_LOGIC_VECTOR(4 downto 1);
+		IO_WRITE    : IN    STD_LOGIC;
+		CS				: IN	  STD_LOGIC;
+		IO_DATA     : INOUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+	);
+END keypad;
+
+
+ARCHITECTURE a OF keypad IS
+	SIGNAL outValue : STD_LOGIC_VECTOR(15 downto 0);
+	SIGNAL tri_enable : STD_LOGIC; -- enable signal for the tri-state driver
+	
+	SIGNAL cycle_count : STD_LOGIC_VECTOR(15 downto 0);
+	SIGNAL bufferFlag : STD_LOGIC;
+
+   SIGNAL bufferVal : STD_LOGIC_VECTOR(3 downto 0);
+
+	signal inVector : STD_LOGIC_VECTOR(4 downTo 1);
+	
+	TYPE state_type is (init, scanCol1, scanCol2, scanCol3, bufferData, registerData);
+	SIGNAL state : state_type;
+	
+	
+	
+	
+	BEGIN
+	
+	
+	inVector <= rowCol;
+	
+	tri_enable <= CS and (not IO_WRITE); -- only drive IO_DATA during IN
+	
+	-- Use LPM function to create tri-state driver for IO_DATA
+	IO_BUS: lpm_bustri
+	GENERIC MAP (
+		lpm_width => 16
+	)
+	PORT MAP (
+		data     => outValue,   -- Put the value on IO_DATA during IN
+		enabledt => tri_enable,
+		tridata  => IO_DATA
+	);
+
+
+	
+	PROCESS (RESETN, CLK)
+	BEGIN
+		IF RESETN = '0' THEN
+			bufferVal <= "0000";
+			bufferFlag <= '0';
+			outValue <= "0000000000000000";
+			state <= scanCol1;
+		ELSIF RISING_EDGE(CLK) THEN
+			CASE state IS
+			
+				WHEN scanCol1 =>
+					keycol(1) <= '0';
+					if (inVector(1) = '0') then 
+						bufferFlag <= '1';
+						bufferVal <= "0001"; -- 1 in binary
+						state <= scanCol1;
+					elsif (inVector(2) = '0') then
+						bufferFlag <= '1';
+						bufferVal <="0100"; -- 4 in binary
+						state <= scanCol1;
+					elsif (inVector(3) = '0') then
+						bufferFlag <= '1';
+						bufferVal <="0111"; -- 7 in binary
+						state <= scanCol1;
+					elsif (inVector(4) = '0') then
+						bufferFlag <= '1';
+						bufferVal <= "1010"; -- 10 in binary corresponds to '*'
+						state <= scanCol1;
+					else 
+						state <= scanCol2;
+					end if;
+						keyCol(1) <= 'Z';
+				
+				WHEN scanCol2 =>
+					keycol(2) <= '0';
+					if (inVector(1) = '0') THEN 
+						bufferFlag <= '1';
+						bufferVal <= "0010"; -- 2 in binary
+						state <= scanCol1;
+					elsif (inVector(2) = '0') then
+						bufferFlag <= '1';
+						bufferVal <= "0101"; -- 5 in binary
+						state <= scanCol1;
+					elsif (inVector(3) = '0') then
+						bufferFlag <= '1';
+						bufferVal <="1000"; -- 8 in binary
+						state <= scanCol1;
+					elsif (inVector(4) = '0') then
+						bufferFlag <= '1';
+						bufferVal <= "1011"; -- 11 in binary corresponds to '0' key
+						state <= scanCol1;
+					else 
+						state <= scanCol3;
+					end if;
+						keyCol(2) <= 'Z';
+						
+
+				WHEN scanCol3 =>
+					keycol(3) <= '0';
+					if (inVector(1) = '0') THEN 
+						bufferFlag <= '1';
+						bufferVal <= "0011"; -- 3 in binary
+						state <= scanCol1;
+					elsif (inVector(2) = '0') then
+						bufferFlag <= '1';
+						bufferVal <="0110"; -- 6 in binary
+						state <= scanCol1;
+					elsif (inVector(3) = '0') then
+						bufferFlag <= '1';
+						bufferVal <="1001"; -- 9 in binary
+						state <= scanCol1;
+					elsif (inVector(4) = '0') then
+						bufferFlag <= '1';
+						bufferVal <="1100"; -- 12 in binary corresponds to '#' key
+						state <= scanCol1;
+					elsif (bufferFlag = '1') then 
+						state <= registerData;
+					else
+						state <= scanCol1;
+					end if;
+						keyCol(3) <= 'Z';
+						
+				when registerData =>
+					outValue <= outValue(11 downto 0) & bufferVal; -- Shift the output value 4 bits 
+					 -- and Place the button press in right 4 bits
+					bufferFlag <= '0';
+					state <= scanCol1;
+
+				
+				WHEN OTHERs =>
+					
+					
+			END CASE;
+					
+		END IF;
+	END PROCESS;
+
+END a;
+
